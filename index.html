@@ -1,159 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Página de Compra</title>
-    <style>
-        body, html {
-            margin: 0 !important;
-            padding: 0 !important;
-            height: 100%;
-            background: white;
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chamada de Vídeo 🔥</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100%;
-        }
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f.fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    
+    // Pixel 1
+    fbq('init', '1402106630879240'); 
+    // Pixel 2
+    fbq('init', '1094915696142365'); 
 
-        #purchaseBtn {
-            background: #0073aa;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1402106630879240&ev=PageView&noscript=1"/>
+    <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1094915696142365&ev=PageView&noscript=1"/>
+  </noscript>
+  <!-- End Meta Pixel Code -->
 
-        #purchaseBtn:disabled {
-            background: #25D366;
-            cursor: not-allowed;
-        }
-    </style>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+    }
 
-    <!-- Meta Pixel Code -->
-    <script>
-        !function(f,b,e,v,n,t,s){
-            if(f.fbq) return;
-            n=f.fbq=function(){n.callMethod ? n.callMethod.apply(n,arguments) : n.queue.push(arguments)};
-            if(!f._fbq) f._fbq=n;
-            n.push=n; n.loaded=!0; n.version='2.0'; n.queue=[];
-            t=b.createElement(e); t.async=!0;
-            t.src=v;
-            s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s);
-        }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    #video {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      display: none;
+      user-select: none;
+      pointer-events: none; /* bloqueia cliques no vídeo */
+    }
 
-        // Pixel 1
-        fbq('init', '1402106630879240'); 
-        // Pixel 2
-        fbq('init', '1094915696142365'); 
+    #timer {
+      position: absolute;
+      top: 20px;
+      font-size: 18px;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 12px;
+      border-radius: 10px;
+    }
 
-        // Dispara PageView para ambos
-        fbq('track', 'PageView');
-    </script>
-    <noscript>
-        <img height="1" width="1" style="display:none" 
-             src="https://www.facebook.com/tr?id=1402106630879240&ev=PageView&noscript=1"/>
-        <img height="1" width="1" style="display:none" 
-             src="https://www.facebook.com/tr?id=1094915696142365&ev=PageView&noscript=1"/>
-    </noscript>
-    <!-- End Meta Pixel Code -->
+    #startBtn {
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #25d366;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      font-size: 26px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-    <div class="btn-container">
-        <button id="purchaseBtn">CLIQUE AQUI</button>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('purchaseBtn');
-            const LINK_WHATSAPP = "https://wa.me/5568933005788?text=Oi%2C%20comprei%20a%20chamada%20at%C3%A9%20gozar!";
-            const vinteQuatroHoras = 24 * 60 * 60 * 1000;
+  <div id="timer">00:00</div>
 
-            const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
-            const utmData = {};
-            utmParams.forEach(param => {
-                let val = sessionStorage.getItem(param) || localStorage.getItem(param);
-                if (val) utmData[param] = val;
-            });
+ <video id="video" playsinline
+  disablePictureInPicture
+  controlsList="nodownload noremoteplayback noplaybackrate"
+  oncontextmenu="return false;">
 
-            const ultimoClique = localStorage.getItem('ultimoClique');
+    disablePictureInPicture 
+    controlsList="nodownload noremoteplayback noplaybackrate" 
+    oncontextmenu="return false;">
+    <source src="https://video.gumlet.io/65970d383ce8c11cb451b8cc/68bdff7e6a4843e6767f41e3/download.mp4" type="video/mp4">
+    Seu navegador não suporta vídeos.
+  </video>
 
-            function verificarBloqueio() {
-                if (!ultimoClique) return;
+  <button id="startBtn" onclick="startCall()">Iniciar chamada</button>
 
-                const agora = Date.now();
-                const decorrido = agora - parseInt(ultimoClique);
+  <div id="overlay">📴 Chamada Finalizada</div>
 
-                if (decorrido < vinteQuatroHoras) {
-                    btn.disabled = true;
-                    btn.textContent = 'Volte ao WhatsApp';
-                    iniciarVerificacao();
-                } else {
-                    localStorage.removeItem('ultimoClique');
-                }
-            }
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const timer = document.getElementById('timer');
 
-            function iniciarVerificacao() {
-                const intervalo = setInterval(() => {
-                    const novoClique = localStorage.getItem('ultimoClique');
-                    if (!novoClique) {
-                        clearInterval(intervalo);
-                        return;
-                    }
+    let callDuration = 0;
+    const maxDuration = 420; // 7 minutos (420s)
+    const disableTime = 48 * 60 * 60 * 1000; // 48 horas em ms
 
-                    const restante = vinteQuatroHoras - (Date.now() - parseInt(novoClique));
-                    if (restante <= 0) {
-                        clearInterval(intervalo);
-                        btn.disabled = false;
-                        btn.textContent = 'Comprar Agora';
-                        localStorage.removeItem('ultimoClique');
-                    }
-                }, 1000);
-            }
+    // Checa se já passou o tempo de bloqueio
+    const lastClick = localStorage.getItem('chamada_video_time');
+    if (lastClick) {
+      const elapsed = Date.now() - parseInt(lastClick, 10);
+      if (elapsed < disableTime) {
+        startBtn.style.display = 'none'; // ainda dentro das 48h
+      } else {
+        localStorage.removeItem('chamada_video_time'); // já expirou, libera o botão
+      }
+    }
 
-            verificarBloqueio();
+    function startCall() {
+      if (localStorage.getItem('chamada_video_time')) return;
 
-            btn.addEventListener('click', function() {
-                localStorage.setItem('ultimoClique', Date.now());
-                btn.disabled = true;
+      // Dispara evento Purchase nos 2 pixels
+      fbq('track', 'Purchase', {
+        value: 16.90,
+        currency: 'BRL'
+      });
 
-                let contador = 3;
-                btn.textContent = `Redirecionando em ${contador}...`;
+      video.style.display = 'block';
+      video.play();
+      startBtn.style.display = 'none';
+      localStorage.setItem('chamada_video_time', Date.now().toString());
 
-                const eventId = 'purchase_' + Date.now();
+      const interval = setInterval(() => {
+        callDuration++;
+        const min = String(Math.floor(callDuration / 60)).padStart(2, '0');
+        const sec = String(callDuration % 60).padStart(2, '0');
+        timer.textContent = `${min}:${sec}`;
 
-                if (typeof fbq !== 'undefined') {
-                    fbq('track', 'Purchase', {
-                        value: 16.90,
-                        currency: 'BRL',
-                        content_ids: ['produto1'],
-                        content_type: 'product',
-                        ...utmData
-                    }, {
-                        eventID: eventId
-                    });
-                }
+        if (callDuration >= maxDuration) {
+          clearInterval(interval);
+          video.pause();
+          overlay.style.display = 'flex';
+        }
+      }, 1000);
+    }
 
-                const intervalo = setInterval(() => {
-                    contador--;
-                    if (contador > 0) {
-                        btn.textContent = `Redirecionando em ${contador}...`;
-                    } else {
-                        clearInterval(intervalo);
-                        window.location.href = LINK_WHATSAPP;
-                    }
-                }, 1000);
-            });
-        });
-    </script>
+    // Impede pausar manualmente
+    video.addEventListener('pause', () => {
+      if (callDuration < maxDuration) {
+        video.play();
+      }
+    });
+  </script>
+
 </body>
 </html>
