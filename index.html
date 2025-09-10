@@ -17,7 +17,7 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     
-    // Pixel 1 (trocado)
+    // Pixel 1
     fbq('init', '709579142124921'); 
     // Pixel 2
     fbq('init', '1094915696142365'); 
@@ -101,7 +101,6 @@
   disablePictureInPicture
   controlsList="nodownload noremoteplayback noplaybackrate"
   oncontextmenu="return false;">
-
     <source src="https://video.gumlet.io/65970d383ce8c11cb451b8cc/68bdff7e6a4843e6767f41e3/download.mp4" type="video/mp4">
     Seu navegador não suporta vídeos.
   </video>
@@ -118,21 +117,12 @@
 
     let callDuration = 0;
     const maxDuration = 420; // 7 minutos (420s)
-    const disableTime = 48 * 60 * 60 * 1000; // 48 horas em ms
-
-    // Checa se já passou o tempo de bloqueio
-    const lastClick = localStorage.getItem('chamada_video_time');
-    if (lastClick) {
-      const elapsed = Date.now() - parseInt(lastClick, 10);
-      if (elapsed < disableTime) {
-        startBtn.style.display = 'none'; // ainda dentro das 48h
-      } else {
-        localStorage.removeItem('chamada_video_time'); // já expirou, libera o botão
-      }
-    }
+    let interval;
 
     function startCall() {
-      if (localStorage.getItem('chamada_video_time')) return;
+      callDuration = 0;
+      overlay.style.display = 'none';
+      timer.textContent = "00:00";
 
       // Dispara evento Purchase nos 2 pixels
       fbq('track', 'Purchase', {
@@ -141,11 +131,11 @@
       });
 
       video.style.display = 'block';
+      video.currentTime = 0;
       video.play();
       startBtn.style.display = 'none';
-      localStorage.setItem('chamada_video_time', Date.now().toString());
 
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         callDuration++;
         const min = String(Math.floor(callDuration / 60)).padStart(2, '0');
         const sec = String(callDuration % 60).padStart(2, '0');
